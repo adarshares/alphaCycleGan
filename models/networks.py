@@ -226,8 +226,8 @@ class alphaLoss(nn.Module):
         # Define your loss computation here
         #print("predicted=",predicted,"\ntarget=",target)
         loss = 0
-        #predicted = torch.clamp(predicted,self.epsilon,1-self.epsilon)
-        sig_predicted = self.sigmoid(predicted)
+        sig_predicted = torch.sigmoid(predicted)
+        predicted = torch.clamp(predicted,self.epsilon,1-self.epsilon)
         # print("using alphaloss")
         if(self.alphaConst == -1):
             loss = -torch.mean(target*torch.log(sig_predicted) + (1-target)*torch.log(1-sig_predicted))
