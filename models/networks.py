@@ -218,17 +218,21 @@ class alphaLoss(nn.Module):
         else:
             self.alphaConst = alpha/(alpha-1)   # assigning alpha
 
+    def sigmoid(x):
+        return 1 / (1 + torch.exp(-x))
+    
     #target = y; predicted y^
     def forward(self, predicted, target):
         # Define your loss computation here
         #print("predicted=",predicted,"\ntarget=",target)
         loss = 0
-        predicted = torch.clamp(predicted,self.epsilon,1-self.epsilon)
-        print("using alphaloss")
+        #predicted = torch.clamp(predicted,self.epsilon,1-self.epsilon)
+        sig_predicted = self.sigmoid(predicted)
+        # print("using alphaloss")
         if(self.alphaConst == -1):
-            loss = -torch.mean(target*torch.log(predicted) + (1-target)*torch.log(1-predicted))
+            loss = -torch.mean(target*torch.log(sig_predicted) + (1-target)*torch.log(1-sig_predicted))
         else:
-            loss = self.alphaConst*torch.mean(((1 - (target * torch.pow(predicted, 1/self.alphaConst))) - ((1-target)*torch.pow(1-predicted,1/self.alphaConst))))
+            loss = self.alphaConst*torch.mean(((1 - (target * torch.pow(sig_predicted, 1/self.alphaConst))) - ((1-target)*torch.pow(1-sig_predicted,1/self.alphaConst))))
 
         #loss = torch.mean((predicted - target) ** 2) * self.weight
         return loss

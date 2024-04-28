@@ -5,6 +5,7 @@ results/
 build/
 dist/
 *.png
+datasets/horse2zebra/*
 torch.egg-info/
 */**/__pycache__
 torch/version.py
